@@ -34,7 +34,18 @@ Template {
 
 .set-audio{
     grid-column: 1 / span 2;
+    display: grid;
+    place-items: center;
 }
+.set-audio>H1{
+    margin-bottom: 0;
+}
+.set-audio>P{
+    overflow-wrap: normal;
+    width: 400px;
+    text-align: center;
+}
+
 .graphing{
     grid-column: 1 / span 2;
 }

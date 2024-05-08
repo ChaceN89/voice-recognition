@@ -5,6 +5,10 @@
     gap: 4px;
 }
 
+.tight{
+    justify-content: center;
+}
+
 .dcc-dropdown{
     width: 160px;
 }
@@ -41,5 +45,7 @@
 .select-button:hover {
     background-color: cyan;
 }
+
+
 
 

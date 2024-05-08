@@ -1,48 +1,35 @@
-.mic-button {
-    background-color: rgb(0, 0, 0);
-    border: none;
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    color: white;
-    border: 2px solid rgba(0, 0, 0, 0.4);
-}
-.mic-button i {
-    font-size: 24px; /* or larger, depending on your needs */
-    color: white; /* Adjust color if needed */
-}
-
-.mic-button:hover {
-    cursor: pointer;
-}
-
-.recording {
-    animation: pulse-animation 0.5s infinite;
-} 
-
-@keyframes pulse-animation {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
-    }
-    14% {
-        box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.9);
-    }
-    28% {
-        box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.8);
-    }
-    42% {
-        box-shadow: 0 0 15px 7px rgba(0, 0, 0, 0.7);
-    }
-    56% {
-        box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 25px 12px rgba(0, 0, 0, 0.8);
-    }
-    84% {
-        box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.9);
-    }
-    100% {
-        box-shadow: 0 0 15px 7px rgba(0, 0, 0, 1);
-    }
-}
+.record-loader {
+    width: 4.8px;
+    height: 4.8px;
+    display: block;
+    margin: 20px auto;
+    position: relative;
+    border-radius: 4px;
+    color: #FFF;
+    background: currentColor;
+    box-sizing: border-box;
+    animation: animloader 0.3s 0.3s linear infinite alternate;
+  }
+  .record-loader::after,
+  .record-loader::before {
+    content: '';  
+    box-sizing: border-box;
+    width: 4.8px;
+    height: 4.8px;
+    border-radius: 4px;
+    background: currentColor;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 15px;
+    animation: animloader 0.3s 0.45s linear infinite alternate;
+  }
+  .record-loader::after {
+      top: -15px;
+      animation-delay: 0s;
+  }
+  
+  @keyframes animloader {
+      0% { width: 4.8px }
+      100% { width: 48px}
+  }

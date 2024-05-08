@@ -23,6 +23,27 @@ def register(app):
             stop_clicks = 0
         return record_clicks > stop_clicks
 
+    # handles the recording indicator
+    @app.callback(
+        Output("recording-indicator", "children"),
+        Input("record-button", "n_clicks"),
+        Input("stop-button", "n_clicks"),
+        State("audio-recorder", "recording"),
+        prevent_initial_call=True
+    )
+    def update_recording_indicator(record_clicks, stop_clicks, recording):
+        if record_clicks is None:
+            record_clicks = 0
+        if stop_clicks is None:
+            stop_clicks = 0
+        
+        # If recording has started, show the recording icon, else hide it
+        if record_clicks > stop_clicks:
+            return html.Div(className="record-loader")
+        else:
+            return ""
+
+    # Handles playing the audio for the user using the audio samples
     @app.callback(
         Output("audio-output", "children"),
         Input("play-button", "n_clicks"),
@@ -45,15 +66,16 @@ def register(app):
 
     @app.callback(
         Output("dummy-output", "children"),
+        Output("audio-output", "children", allow_duplicate=True),
         Input("audio-recorder", "audio"),
         Input("reset-button", "n_clicks"),
-        prevent_initial_call=True
+        prevent_initial_call=True, 
     )
     def handle_audio_callbacks(audio, reset_clicks):
         global audio_samples
         ctx = callback_context
         if not ctx.triggered:
-            return ""
+            return "",""
 
         trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
@@ -63,4 +85,4 @@ def register(app):
         elif trigger_id == "reset-button" and reset_clicks:
             # Clear the audio samples list to reset the audio
             audio_samples = []
-        return ""
+        return "",""
