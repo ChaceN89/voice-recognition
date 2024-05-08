@@ -1,0 +1,45 @@
+.side-by-side {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Ensures items are vertically centered */
+    gap: 4px;
+}
+
+.dcc-dropdown{
+    width: 160px;
+}
+
+/* Common button styles */
+.button {
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button:hover {
+    transform: scale(1.05);
+}
+
+/* Specific styles for delete button */
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* Specific styles for select button */
+.select-button {
+    background-color: lightcyan;
+    color: black;
+}
+
+.select-button:hover {
+    background-color: cyan;
+}
+
+

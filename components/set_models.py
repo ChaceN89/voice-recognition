@@ -2,15 +2,25 @@ from dash import html, dcc
 import globals
 import dash_bootstrap_components as dbc
 
+# https://pypi.org/project/dash-recording-components/
+
 layout = html.Div(
-    className="",
     children=[
-        html.H2("Test Model"),
+        html.H2("Create Model"),
+        html.Div(
+            className="side-by-side",
+            children=[
+                dcc.Input(id='text-input', type='text', placeholder='Name Model...'),
+                html.Button("Create Model", id="create-model"),
+            ]
+        ),
+
+        html.H2("Delete Model"),
         html.Div(
             className="side-by-side",
             children=[
                 dcc.Dropdown(
-                    id='select-model',
+                    id='delete-model-dropdown',
                     options=[
                         {'label': 'Option 1', 'value': 'OPT1'},
                         {'label': 'Option 2', 'value': 'OPT2'},
@@ -20,17 +30,10 @@ layout = html.Div(
                     clearable=False,  # Prevents the user from clearing the selection
                     className="dcc-dropdown"  # Add this class for styling
                 ),
-                dbc.Button("Test", id="test-button", className="button select-button"),
-            ]
-        ),
-        html.Div(
-            children=[
-                html.Label("Access Granted or not: "),
-                html.I(className="fas fa-check"),
-                html.Div("/"),
-                html.I(className="fas fa-x")
+                dbc.Button("Delete", id="delete-button", className="button delete-button"),
             ]
         )
 
-    ]
+
+    ],
 )

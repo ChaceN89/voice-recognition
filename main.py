@@ -10,7 +10,7 @@ import os
 
 import app_layout 
 import globals
-from callbacks import record_cb
+from callbacks import models_cb, record_cb, testing_cb
 
 # Function to automatically open the web browser when the app is launched
 def open_browser():
@@ -44,6 +44,8 @@ app.index_string = """<!DOCTYPE html>
 app.layout = app_layout.layout
 
 record_cb.register(app)
+models_cb.register(app)
+testing_cb.register(app)
 
 # Run the app (will automatically open a window)
 if __name__ == '__main__':

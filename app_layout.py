@@ -1,30 +1,27 @@
 # app_layout.py
-# the main layout html for the app
-# call multipe layout components
+# the main layout html for the app 
+# Header, body template and footer
+# body contains logical componets 
 
 from dash import html, dcc
-from components import create_model, test_model
+from components import set_models, test_model, set_audio, graphing
 
 layout = html.Div(
     className="container",
     children=[
-
-        # the header with report settings
-        html.Header(
-             html.H1("Header")
+        html.Header( # the header with report settings
+             html.H1("Voice Recognition")
         ),
-
-        # the plots and tables
-        html.Div(
-            className="body",
+        html.Template( # the plots and tables
             children=[
-                create_model.layout,
-                test_model.layout
+                set_audio.layout,
+                set_models.layout,
+                test_model.layout,
+                graphing.layout
             ]
         ),
-
-       html.Footer(
-            html.H3("Footer")
-       )
+        html.Footer( # Footer for future reference 
+            html.H3("Chace Nielson")
+        )
     ]
 )
