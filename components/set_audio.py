@@ -6,7 +6,7 @@ layout = html.Div(
     className="set-audio",
     children=[
         html.H1("Audio Recorder and Player"),
-        html.P("For creating a model, record for about 1 minute. For testing audio against a model, record for about 10 seconds."),
+        html.P("For creating a model, record for about 1 minute. For testing audio against a model, record for about 10 seconds. You may pause recording and then resume recording."),
         html.Div(
             className="side-by-side tight",
             children=[
@@ -38,6 +38,7 @@ layout = html.Div(
         html.Div(id="audio-output"),
         html.Div(id="dummy-output", style={"display": "none"}),
         html.Div( id="recording-indicator" ),
+        html.Div( id="recording-stored" ),
         drc.AudioRecorder(id="audio-recorder")
     ]
 )
