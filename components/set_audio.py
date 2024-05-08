@@ -1,6 +1,5 @@
-from dash import html
+from dash import html, dcc
 import dash_recording_components as drc
-
 
 layout = html.Div(
     className="set-audio",
@@ -31,15 +30,17 @@ layout = html.Div(
                     id="reset-button",
                     children=[ html.I(className="fas fa-undo"), "Rest" ]
                 ),
-
             ]
         ),
-
-        html.Div(id="audio-output"),
+        
+        html.Div(id="audio-output"), # stores the output of the audio, contains value(html.audio) or is null
         html.Div(id="dummy-output", style={"display": "none"}),
         html.Div( id="recording-indicator" ),
+        html.Div( id="recording-timer" ),
         html.Div( id="recording-stored" ),
-        drc.AudioRecorder(id="audio-recorder")
+        drc.AudioRecorder(id="audio-recorder"),
+        dcc.Interval(id='interval-component', interval=1000, n_intervals=0),  # Update every 1 second
+
     ]
 )
 

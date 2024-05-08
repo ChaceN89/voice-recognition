@@ -3,9 +3,18 @@ from dash import html, Input, Output, State, callback_context
 import numpy as np
 import soundfile as sf
 import base64
+import time
+
 
 # Define the audio_samples list at the global level
 audio_samples = []
+
+
+def calculate_duration(audio_samples):
+    # Calculate duration based on the length of audio samples
+    # You may need to adjust this calculation based on your audio recording settings
+    # For example, if you know the sampling rate and number of samples, you can calculate the duration more accurately
+    return len(audio_samples) / 16000  # Assuming 16 kHz sampling rate, adjust as needed
 
 def register(app):
     # to start the recording 
@@ -43,6 +52,25 @@ def register(app):
             return html.Div(className="record-loader"),""
         else:
             return "","Audio Recorded"
+
+
+    # handles the value of the recording timer 
+    # Modify your callback to update the duration at regular intervals
+    @app.callback(
+        Output("recording-timer", "children"),
+        Input("interval-component", "n_intervals"),
+        prevent_initial_call=True
+    )
+    def update_recording_timer(n_intervals):
+        if audio_samples:  # Check if there are recorded audio samples
+            # Calculate the duration based on the length of the audio samples
+            duration_seconds = calculate_duration(audio_samples)
+            # Format duration as HH:MM:SS
+            duration_str = time.strftime("%H:%M:%S", time.gmtime(duration_seconds))
+            return str(duration_str)
+        else:
+            return ""
+
 
     # Handles playing the audio for the user using the audio samples
     @app.callback(
