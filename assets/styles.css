@@ -67,7 +67,7 @@ Template {
 }
 
 .output-text{
-    max-width: 240px;
+    max-width: 300px;
     overflow-wrap: normal;
 }
 

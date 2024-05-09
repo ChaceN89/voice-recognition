@@ -112,32 +112,43 @@ def test_against_model(gmm_model, auth_features, audio_array, sample_rate):
     print("test_std ", test_std)
   
     # test for a match 
-    match_value, z_score, CI, critical_value = test_zscore(test_mu, test_std, auth_Mu, auth_Std, globals.CI)
+    is_accepted, mean_diff, std_diff = test_with_thresholds(test_mu, test_std, auth_Mu, auth_Std, globals.mean_threshold, globals.std_threshold, globals.CI)
 
 
     # get the plotting infomation
     plot = create_plot(auth_Prob, auth_scores, auth_Mu, auth_Std,
                         test_Prob, scores, test_mu, test_std )
 
-    if match_value:    
-        # change return to show access granted or not based on output of test agaisnt model
-        return html.Div(
-                className="access-text",
-                children=[
-                    html.I(className="fas fa-check", style={'fontSize': '48px'}),
-                    html.Label(f"Audio is Accepted at a confidence interval of: {CI*100}%"),
-                ]
-            ), plot
-
+    # set up return infomation 
+    message = ""
+    if is_accepted:
+        message = f"Audio Accepted at a confidence interval of: {globals.CI*100}%"
     else:
-        return html.Div(
-                className="access-text",
-                children=[
-                    html.I(className="fas fa-x", style={'fontSize': '48px'}),
-                    html.Label(f"Audio Rejected. In order to pass, a confidence interval of: {CI*100}% is required"),
-                ]
-            ), plot
+        message = f"Audio Rejected at a confidence interval of: {globals.CI*100}%."
+    
+    icon_class = "fas fa-check" if is_accepted else "fas fa-x"
 
+    
+    # change return to show access granted or not based on output of test agaisnt model
+    return html.Div(
+            className="access-text",
+            children=[
+                html.I(className=icon_class, style={'fontSize': '34px'}),
+                html.Div(
+                    children=[
+                        html.Label(message),
+                        html.Ul([
+                            html.Li(f"Profile Mean: {round(auth_Mu, 2)}"),
+                            html.Li(f"Profile STD: {round(auth_Std, 2)}"),
+                            html.Li(f"Test Mean: {round(test_mu, 2)}"),
+                            html.Li(f"Test STD: {round(test_std, 2)}"),
+                            html.Li(f"Mean Difference: {round(mean_diff, 2)}"),
+                            html.Li(f"STD Difference: {round(std_diff, 2)}"),
+                        ])
+                    ]
+                )
+            ]
+        ), plot
 
 
 # This takes the scores and flattens them to be returned to calling function
@@ -163,34 +174,51 @@ def test_samples(gmm_model, test_samples):
 
 
 # -------------------------------------------------------------------------------
-# --------------------------- testing with Z scores -----------------------------
+# --------------------------- testing with thresholds -----------------------------
 # -------------------------------------------------------------------------------
 
-def test_zscore(test_mu, test_std, real_mu, real_std, CI):
-    # Calculate the z-score
-    z_score = (test_mu - real_mu) / (real_std / (test_std ** 0.5))
+# Function to calculate z-score
+def calculate_z_score(test_mu, real_mu, real_std):
+    return (test_mu - real_mu) / real_std
+
+# Function to normalize the scores
+def normalize_scores(scores, mean, std):
+    return (scores - mean) / std
+
+# Function to test with thresholds on mean and standard deviation differences
+def test_with_thresholds(test_mu, test_std, real_mu, real_std, mean_threshold, std_threshold, CI):
+    mean_diff = abs(test_mu - real_mu)
+    std_diff = abs(test_std - real_std)
+
+    print("mean_diff ", mean_diff)
+    print("std_diff ", std_diff)
+    print("mean_threshold ", mean_threshold)
+    print("std_threshold ", std_threshold)
+
+    # see if it can get past the thresholds    # 
+    if mean_diff > mean_threshold or std_diff > std_threshold:
+        print("reject 1")
+        return False, mean_diff, std_diff
     
-    # Determine the critical value from the confidence interval
+    # Normalize the scores
+    norm_test_mu = normalize_scores(test_mu, real_mu, real_std)
+    norm_test_std = normalize_scores(test_std, real_mu, real_std)
+    norm_real_mu = normalize_scores(real_mu, real_mu, real_std)
+    norm_real_std = normalize_scores(real_std, real_mu, real_std)
+    
+    # Calculate the z-score
+    z_score = calculate_z_score(norm_test_mu, norm_real_mu, norm_real_std)
+    
+    # z_score = calculate_z_score(test_mu, real_mu, real_std)
     alpha = 1 - CI
     critical_value = stats.norm.ppf(1 - alpha / 2)
     
-    # Compare the z-score with the critical value
     if abs(z_score) <= critical_value:
-        return True, z_score, CI, critical_value
-    
-    # Otherwise, find the CI that would accept the test
-    while abs(z_score) > critical_value:
-        # Incrementally increase the CI
-        CI += 0.01
-        alpha = 1 - CI
-        critical_value = stats.norm.ppf(1 - alpha / 2)
-
-        # Break if CI reaches 1 (100%)
-        if CI >= 1:
-            return False, z_score, 1, critical_value
-    
-    return False, z_score, CI, critical_value
-
+        print("accept 1")
+        return True, mean_diff, std_diff
+    else:
+        print("reject 2")
+        return False, mean_diff, std_diff
 
 
 # -------------------------------------------------------------------------------
