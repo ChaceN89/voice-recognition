@@ -1,5 +1,6 @@
 import os
 import librosa
+from scipy import stats
 from sklearn.mixture import GaussianMixture
 import globals
 import pickle
@@ -11,6 +12,7 @@ import soundfile as sf
 from scipy.stats import norm
 import plotly.graph_objs as go
 import numpy as np
+from dash import html
 
 # -------------------------------------------------------------------------------
 # ----------------- create gmm model and get features ---------------------------
@@ -94,7 +96,7 @@ def test_against_model(gmm_model, auth_features, audio_array, sample_rate):
     scores = test_data_against_gmm(gmm_model, features)
     print("Scores:", scores)
 
-    x = np.arange(-260, 100, 1)
+    x = np.arange(-200, 200, 1)
 
     auth_Mu = np.mean(auth_scores)
     auth_Std = np.std(auth_scores)
@@ -104,20 +106,37 @@ def test_against_model(gmm_model, auth_features, audio_array, sample_rate):
     test_std = np.std(scores)
     test_Prob = norm.pdf(x, loc=test_mu, scale=test_std)
 
+    print("auth_Mu ", auth_Mu)
+    print("auth_std ", auth_Std)
+    print("test_mu ", test_mu)
+    print("test_std ", test_std)
   
     # test for a match 
-    match_value = test_zscore(test_mu, auth_Mu, auth_Std, globals.critical_value),
-    needed_crit_value = find_passing_critical_value(test_mu, auth_Mu, auth_Std, globals.critical_value)
+    match_value, z_score, CI, critical_value = test_zscore(test_mu, test_std, auth_Mu, auth_Std, globals.CI)
 
-    # add ploting stuff later
 
+    # get the plotting infomation
     plot = create_plot(auth_Prob, auth_scores, auth_Mu, auth_Std,
                         test_Prob, scores, test_mu, test_std )
 
-    if match_value:
-        return  f"This audio matches the model with a critical value of {globals.critical_value}", plot
+    if match_value:    
+        # change return to show access granted or not based on output of test agaisnt model
+        return html.Div(
+                className="access-text",
+                children=[
+                    html.I(className="fas fa-check", style={'fontSize': '48px'}),
+                    html.Label(f"Audio is Accepted at a confidence interval of: {CI*100}%"),
+                ]
+            ), plot
+
     else:
-        return f"This audio does not match the model. in order to match a critical value of {needed_crit_value} is needed.", plot
+        return html.Div(
+                className="access-text",
+                children=[
+                    html.I(className="fas fa-x", style={'fontSize': '48px'}),
+                    html.Label(f"Audio Rejected. In order to pass, a confidence interval of: {CI*100}% is required"),
+                ]
+            ), plot
 
 
 
@@ -147,54 +166,31 @@ def test_samples(gmm_model, test_samples):
 # --------------------------- testing with Z scores -----------------------------
 # -------------------------------------------------------------------------------
 
-# returns true of false based on the critical value 
-def test_zscore(test_audio_mean, real_mean, real_std, critical_value=0.05):
-    """
-    Classify a test signature as genuine or impostor based on a critical value threshold.
+def test_zscore(test_mu, test_std, real_mu, real_std, CI):
+    # Calculate the z-score
+    z_score = (test_mu - real_mu) / (real_std / (test_std ** 0.5))
+    
+    # Determine the critical value from the confidence interval
+    alpha = 1 - CI
+    critical_value = stats.norm.ppf(1 - alpha / 2)
+    
+    # Compare the z-score with the critical value
+    if abs(z_score) <= critical_value:
+        return True, z_score, CI, critical_value
+    
+    # Otherwise, find the CI that would accept the test
+    while abs(z_score) > critical_value:
+        # Incrementally increase the CI
+        CI += 0.01
+        alpha = 1 - CI
+        critical_value = stats.norm.ppf(1 - alpha / 2)
 
-    Parameters:
-    test_sig (float): The signature score to be tested.
-    real_mean (float): The mean score of genuine signatures.
-    real_std (float): The standard deviation of genuine signatures.
-    critical_value (float): The critical value for determining the threshold.
+        # Break if CI reaches 1 (100%)
+        if CI >= 1:
+            return False, z_score, 1, critical_value
+    
+    return False, z_score, CI, critical_value
 
-    Returns:
-    bool: True if the signature is classified as genuine, False otherwise.
-    """
-    # Calculate the Z-score for the given critical value
-    z_score = norm.ppf(1 - critical_value/2)  # Two-tailed test
-
-    # Set the threshold based on the Z-score
-    lower_bound = real_mean - z_score * real_std
-    upper_bound = real_mean + z_score * real_std
-
-    return lower_bound <= test_audio_mean <= upper_bound
-
-
-# Function to find the critical value that allows the test to pass
-def find_passing_critical_value(test_audio_mean, real_mean, real_std, initial_critical_value=0.05, step=0.01, max_critical_value=1.0):
-    """
-    Find the critical value that allows the test to pass.
-
-    Parameters:
-    test_audio_mean (float): The audio score to be tested.
-    real_mean (float): The mean score of genuine signatures.
-    real_std (float): The standard deviation of genuine signatures.
-    initial_critical_value (float): The starting critical value for determining the threshold.
-    step (float): The increment to increase the critical value by in each iteration.
-    max_critical_value (float): The maximum critical value to consider.
-
-    Returns:
-    float: The critical value that allows the test to pass, or -1 if no such value is found.
-    """
-    critical_value = initial_critical_value
-
-    while critical_value <= max_critical_value:
-        if test_zscore(test_audio_mean, real_mean, real_std, critical_value):
-            return critical_value
-        critical_value += step
-
-    return -1  # Indicates no critical value found within the range
 
 
 # -------------------------------------------------------------------------------

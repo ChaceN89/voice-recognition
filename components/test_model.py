@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 layout = html.Div(
     className="",
     children=[
-        html.H2("Test Model"),
+        html.H2("Test Voice Profile"),
         html.Div(
             className="side-by-side",
             children=[
@@ -18,6 +18,6 @@ layout = html.Div(
                 dbc.Button("Test", id="test-button", className="button select-button"),
             ]
         ),
-        html.Div(id="test-output")
+        html.Div(id="test-output", className="output-text")
     ]
 )

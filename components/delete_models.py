@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 
 layout = html.Div(
     children=[
-        html.H2("Delete Model"),
+        html.H2("Remove Voice Profile"),
         html.Div(
             className="side-by-side",
             children=[
@@ -17,6 +17,6 @@ layout = html.Div(
                 dbc.Button("Delete", id="delete-button", className="button delete-button"),
             ]
         ),
-        html.Div(id="delete-model-text"),
+        html.Div(id="delete-model-text", className="output-text"),
     ],
 )

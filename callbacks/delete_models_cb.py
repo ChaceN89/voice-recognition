@@ -35,6 +35,6 @@ def register(app):
             file_path = os.path.join(globals.audio_model_folder, selected_value)
             os.remove(file_path)
 
-            return f"{selected_value} Model Deleted"
+            return f"{selected_value} Profile Deleted"
         else:
             return f""

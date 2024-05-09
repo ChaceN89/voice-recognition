@@ -1,5 +1,5 @@
 import os
-from dash import html, Input, Output, State
+from dash import Input, Output, State
 import globals
 from dash.exceptions import PreventUpdate
 
@@ -35,14 +35,14 @@ def register(app):
     def test_model(n_clicks, selected_model, audio_output):
         if n_clicks:
             if not audio_output:
-                return "Need to record testing audio.", {}
+                return "Need to record testing audio (Press play button before creating profile).", {}
             if not selected_model:
-                return "Need to select a model.", {}
+                return "Need to select a profile.", {}
     
             # get the model
             gmm_model, auth_features = create_gmm.fetch_model(selected_model)
             if not gmm_model:
-                return "Can't find model.", {}
+                return "Can't find profile.", {}
 
             src = audio_output['props'].get('src', '')
             if src.startswith("data:audio/wav;base64,"):
@@ -54,17 +54,6 @@ def register(app):
                 return return_info, plot
             else:
                 return "Couldn't read audio.", {}
-
-
-            # change return to show access granted or not based on output of test agaisnt model
-            return html.Div(
-                children=[
-                    html.Label("Access Granted or not: "),
-                    html.I(className="fas fa-check"),
-                    html.Div("////"),
-                    html.I(className="fas fa-x")
-                ]
-            )
         else:
             raise PreventUpdate 
     

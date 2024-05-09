@@ -5,7 +5,43 @@ layout = html.Div(
     className="set-audio",
     children=[
         html.H1("Audio Recorder and Player"),
-        html.P("For creating a model, record for about 1 minute. For testing audio against a model, record for about 10 seconds. You may pause recording and then resume recording."),
+
+        html.P("Here you can record audio to create a vocal profile or test against an existing vocal profile."),
+        html.Div(
+            className="help-text",
+            children=[
+                html.Div(
+                    children=[
+                        html.H2("Instructions:"),
+                        html.Ul([
+                            html.Li("Creating a Profile: Record for about 1 minute to capture sufficient audio for creating a profile."),
+                            html.Li("Testing Audio: Record for about 10 seconds to test the audio against an existing profile."),
+                            html.Li("Controls:"),
+                            html.Ul([
+                                html.Li("Pause/Resume: You may pause and resume recording as needed."),
+                                html.Li("Play: Use the play button to review your recording."),
+                                html.Li("Reset: Use the reset button to start over if necessary.")
+                            ])
+                        ]),
+                    ]
+                ),
+                html.Div(
+                    children=[
+                        html.H2("Profile Management:"),
+                        html.Ul([
+                            html.Li("Create Vocal Profile: Once the audio is ready, enter a profile name and click 'Create Profile' to create the vocal profile."),
+                            html.Li("Delete Vocal Profile: You can delete a profile at any time by selecting it from the dropdown and clicking 'Delete'."),
+                            html.Li("Test Vocal Profile: Record new audio and test it against your created vocal profile by selecting the profile and clicking 'Test'.")
+                        ])
+                    ]
+                )
+            ]
+        ),
+        
+        
+
+
+
         html.Div(
             className="side-by-side tight",
             children=[

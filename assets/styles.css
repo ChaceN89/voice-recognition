@@ -50,17 +50,52 @@ Template {
     grid-column: 1 / span 3;
     display: grid;
     place-items: center;
-    padding-bottom: 50px;
+    padding-bottom: 10px;
 }
 .set-audio>H1{
     margin-bottom: 0;
 }
 .set-audio>P{
     overflow-wrap: normal;
-    width: 400px;
+    max-width: 1000px;
+    margin: 4px;
     text-align: center;
 }
 
 .graphing{
     grid-column: 1 / span 3;
+}
+
+.output-text{
+    max-width: 240px;
+    overflow-wrap: normal;
+}
+
+.access-text{
+    display: flex;
+
+    align-items: center;
+    gap: 10px;
+}
+
+.help-text {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 10px 0;
+}
+.help-text h2 {
+    margin: 0;
+    padding-bottom: 10px;
+}
+.help-text div {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    max-width: 650px;
+}
+UL{
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
