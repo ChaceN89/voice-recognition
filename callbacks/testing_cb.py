@@ -1,8 +1,5 @@
 import os
-import dash
-from dash import dcc, html, Input, Output, State
-import dash_bootstrap_components as dbc
-
+from dash import html, Input, Output, State
 import globals
 from dash.exceptions import PreventUpdate
 
@@ -28,6 +25,7 @@ def register(app):
 
     @app.callback(
         Output('test-output', 'children'),
+        Output('outcome-graph', 'figure'),
         [Input('test-button', 'n_clicks'),],
         [
             State('select-model-dropdown', 'value'),
@@ -37,25 +35,25 @@ def register(app):
     def test_model(n_clicks, selected_model, audio_output):
         if n_clicks:
             if not audio_output:
-                return "Need to record testing audio."
+                return "Need to record testing audio.", {}
             if not selected_model:
-                return "Need to select a model."
+                return "Need to select a model.", {}
     
             # get the model
-            gmm_model = create_gmm.fetch_model(selected_model)
+            gmm_model, auth_features = create_gmm.fetch_model(selected_model)
             if not gmm_model:
-                return "Can't find model."
+                return "Can't find model.", {}
 
             src = audio_output['props'].get('src', '')
             if src.startswith("data:audio/wav;base64,"):
                 # extract base 64 array and sample rate for the testing data
                 audio_array, sample_rate = create_gmm.extract_base64(src)
             
-                return_info = create_gmm.test_against_model(gmm_model, audio_array, sample_rate)
+                return_info, plot = create_gmm.test_against_model(gmm_model, auth_features, audio_array, sample_rate)
                 
-                return return_info
+                return return_info, plot
             else:
-                return "Couldn't read audio."
+                return "Couldn't read audio.", {}
 
 
             # change return to show access granted or not based on output of test agaisnt model

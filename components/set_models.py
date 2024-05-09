@@ -1,8 +1,5 @@
 from dash import html, dcc
-import globals
 import dash_bootstrap_components as dbc
-
-# https://pypi.org/project/dash-recording-components/
 
 layout = html.Div(
     children=[

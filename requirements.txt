@@ -1,0 +1,4 @@
+dash
+librosa
+plotly
+dash_recording_components

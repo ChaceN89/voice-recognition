@@ -1,7 +1,5 @@
 import os
-import dash
-from dash import dcc, html, Input, Output, State
-import dash_bootstrap_components as dbc
+from dash import Input, Output, State
 
 import globals
 

@@ -1,11 +1,5 @@
-import io
-import os
-from dash import html, Input, Output, State, callback_context
-import numpy as np
-import soundfile as sf
-
+from dash import Input, Output, State, callback_context
 from dash.exceptions import PreventUpdate
-
 from ml_functions import create_gmm
 
 def register(app):
@@ -27,10 +21,10 @@ def register(app):
 
                     # extract base 64 array and sample rate
                     audio_array, sample_rate = create_gmm.extract_base64(src)
-                    gmm_model = create_gmm.create_gmm_model(audio_array, sample_rate) 
+                    gmm_model, features = create_gmm.create_gmm_model(audio_array, sample_rate) 
 
                     # save model in the file structure under audio_models folder
-                    create_gmm.save_model(gmm_model, model_name)
+                    create_gmm.save_model(gmm_model, features, model_name)
                     
                     return f"Model '{model_name}' created successfully."
                 else:
