@@ -9,6 +9,8 @@ CI=0.95
 # A 95% confidence level corresponds to a larger critical value (approximately 1.96 for a two-tailed test).
 # A 90% confidence level corresponds to a smaller critical value (approximately 1.645 for a two-tailed test).
 
-
+# values to initially set a threshold value foe max difference in mean and std allowed before rejecting
 mean_threshold = 40  
 std_threshold = 2
+
+# the CI and z score test is normalized so it will be accepted more often 
