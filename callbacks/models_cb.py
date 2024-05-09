@@ -39,7 +39,7 @@ def register(app):
                     # save model in the file structure under audio_models folder
                     create_gmm.save_model(gmm_model, model_name)
                     
-                    return f"Model '{model_name}' created successfully with audio '"
+                    return f"Model '{model_name}' created successfully."
                 else:
                     return "Failed to create model. Could not read audio."
             else:

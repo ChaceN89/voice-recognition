@@ -22,17 +22,20 @@ layout = html.Div(
             children=[
                 dcc.Dropdown(
                     id='delete-model-dropdown',
-                    options=[
-                        {'label': 'Option 1', 'value': 'OPT1'},
-                        {'label': 'Option 2', 'value': 'OPT2'},
-                        {'label': 'Option 3', 'value': 'OPT3'}
-                    ],
-                    value='OPT1',  # Default value
+                    options=[],  # Options will be populated dynamically
+                    value=None,  # No default value initially
                     clearable=False,  # Prevents the user from clearing the selection
                     className="dcc-dropdown"  # Add this class for styling
                 ),
                 dbc.Button("Delete", id="delete-button", className="button delete-button"),
             ]
+        ),
+        html.Div(id="delete-model-text"),
+
+        dcc.Interval(
+            id='dropdown-refresh',
+            interval=1000,  # in milliseconds
+            n_intervals=0
         )
 
 
