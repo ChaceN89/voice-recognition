@@ -7,7 +7,7 @@ import base64
 import time
 from dash.exceptions import PreventUpdate
 
-from ml_functions import gmm
+from ml_functions import create_gmm
 
 def register(app):
     @app.callback(
@@ -33,12 +33,15 @@ def register(app):
                     # Read audio data using soundfile
                     audio_array, sample_rate = sf.read(audio_io)
                     
-                    gmm_model = gmm.create_gmm_model(audio_array, sample_rate) 
-
+                    gmm_model = create_gmm.create_gmm_model(audio_array, sample_rate) 
                     print(gmm_model)
 
-
-                return f"Model '{model_name}' created successfully with audio '"
+                    # save model in the file structure under audio_models folder
+                    create_gmm.save_model(gmm_model, model_name)
+                    
+                    return f"Model '{model_name}' created successfully with audio '"
+                else:
+                    return "Failed to create model. Could not read audio."
             else:
                 return "Please provide both model name and audio (Press play before creating model)."
         else:

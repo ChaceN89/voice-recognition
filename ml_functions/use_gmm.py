@@ -1,38 +1,7 @@
 import librosa
+import numpy as np
 from sklearn.mixture import GaussianMixture
 
-
-
-
-def create_gmm_model(audio_array, sample_rate):
-    features = extract_mfcc_features(audio_array, sample_rate)
-    gmm = train_gmm(features)
-    return gmm
-
-
-
-def test_audio_vs_gmm():
-    pass
-
-    # auth_test_scores, auth_labels = test_data_against_gmm(gmm,features)
-
-
-
-
-# Function to extract MFCC features and return the array of features
-def extract_mfcc_features(audio_array, sample_rate):
-    return librosa.feature.mfcc(y=audio_array, sr=sample_rate)
-
-
-def train_gmm(training_data, NUMGCOMPONENTS=20):
-    # Create the Gaussian Mixture Model
-    gmm = GaussianMixture(n_components=NUMGCOMPONENTS)
-    
-    # Perform the training using the training data samples
-    for sample in training_data:
-        gmm.fit(sample)
-
-    return gmm
 
 
 

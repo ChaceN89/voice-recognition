@@ -1,3 +1,6 @@
+# fodler for all the audio models
+/audio_models/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
