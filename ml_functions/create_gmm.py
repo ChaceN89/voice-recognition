@@ -27,7 +27,6 @@ def create_gmm_model(audio_array, sample_rate):
 def extract_mfcc_features(audio_array, sample_rate):
     mfcc_features = librosa.feature.mfcc(y=audio_array, sr=sample_rate)
     mfcc_features = mfcc_features.T  # Transpose to match the expected format
-    print("MFCC Features shape:", mfcc_features.shape)
     return [mfcc_features]
 
 # This function trains a gmm model using a default 20 Gaussian components using training data and returns the Model
@@ -38,7 +37,6 @@ def train_gmm(training_data, NUMGCOMPONENTS=20):
     
     # Perform the training using the training data samples
     for sample in training_data:
-        print("Training sample shape:", sample.shape)
         gmm.fit(sample)
 
     return gmm
@@ -91,10 +89,8 @@ def fetch_model(model_name):
 
 def test_against_model(gmm_model, auth_features, audio_array, sample_rate):
     features = extract_mfcc_features(audio_array, sample_rate)
-    print("Test features shape:", features[0].shape)
     auth_scores = test_data_against_gmm(gmm_model, auth_features)
     scores = test_data_against_gmm(gmm_model, features)
-    print("Scores:", scores)
 
     x = np.arange(-200, 200, 1)
 
@@ -106,14 +102,8 @@ def test_against_model(gmm_model, auth_features, audio_array, sample_rate):
     test_std = np.std(scores)
     test_Prob = norm.pdf(x, loc=test_mu, scale=test_std)
 
-    print("auth_Mu ", auth_Mu)
-    print("auth_std ", auth_Std)
-    print("test_mu ", test_mu)
-    print("test_std ", test_std)
-  
     # test for a match 
     is_accepted, mean_diff, std_diff = test_with_thresholds(test_mu, test_std, auth_Mu, auth_Std, globals.mean_threshold, globals.std_threshold, globals.CI)
-
 
     # get the plotting infomation
     plot = create_plot(auth_Prob, auth_scores, auth_Mu, auth_Std,
@@ -165,7 +155,6 @@ def test_samples(gmm_model, test_samples):
     test_scores = []
     # Iterate through test samples:
     for test_sample in test_samples:
-        print("Test sample shape:", test_sample.shape)
         # Collect prediction scores
         test_score = gmm_model.score_samples(test_sample)
         # Append to result lists
@@ -190,14 +179,8 @@ def test_with_thresholds(test_mu, test_std, real_mu, real_std, mean_threshold, s
     mean_diff = abs(test_mu - real_mu)
     std_diff = abs(test_std - real_std)
 
-    print("mean_diff ", mean_diff)
-    print("std_diff ", std_diff)
-    print("mean_threshold ", mean_threshold)
-    print("std_threshold ", std_threshold)
-
     # see if it can get past the thresholds    # 
     if mean_diff > mean_threshold or std_diff > std_threshold:
-        print("reject 1")
         return False, mean_diff, std_diff
     
     # Normalize the scores
@@ -214,10 +197,8 @@ def test_with_thresholds(test_mu, test_std, real_mu, real_std, mean_threshold, s
     critical_value = stats.norm.ppf(1 - alpha / 2)
     
     if abs(z_score) <= critical_value:
-        print("accept 1")
         return True, mean_diff, std_diff
     else:
-        print("reject 2")
         return False, mean_diff, std_diff
 
 

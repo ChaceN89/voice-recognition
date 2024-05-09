@@ -25,8 +25,6 @@ def register(app):
         [State('delete-model-dropdown', 'value')]
     )
     def delete_file(n_clicks, selected_value):
-        print(n_clicks)
-        print(selected_value)
         if n_clicks:
             if selected_value is None:
                 return "Select a Model"
