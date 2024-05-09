@@ -51,13 +51,14 @@ def register(app):
                 # extract base 64 array and sample rate for the testing data
                 audio_array, sample_rate = create_gmm.extract_base64(src)
             
-                create_gmm.test_against_model(gmm_model, audio_array, sample_rate)
+                return_info = create_gmm.test_against_model(gmm_model, audio_array, sample_rate)
                 
-                
+                return return_info
+            else:
+                return "Couldn't read audio."
 
 
-
-            # change return to show access granted or not
+            # change return to show access granted or not based on output of test agaisnt model
             return html.Div(
                 children=[
                     html.Label("Access Granted or not: "),
