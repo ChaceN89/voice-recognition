@@ -24,8 +24,13 @@
     gap: 100px;
 }
 
+Button:hover{
+    cursor: pointer;
+}
+
 .button:hover {
     transform: scale(1.05);
+    cursor: pointer;
 }
 
 /* Specific styles for delete button */
@@ -46,6 +51,16 @@
 
 .select-button:hover {
     background-color: cyan;
+}
+
+/* Specific styles for select button */
+.create-button {
+    background-color: lightgoldenrodyellow;
+    color: black;
+}
+
+.create-button:hover {
+    background-color: goldenrod;
 }
 
 
