@@ -3,8 +3,7 @@ import os
 from dash import html, Input, Output, State, callback_context
 import numpy as np
 import soundfile as sf
-import base64
-import time
+
 from dash.exceptions import PreventUpdate
 
 from ml_functions import create_gmm
@@ -21,20 +20,14 @@ def register(app):
         if n_clicks:
             # Check if model name and audio output are provided
             if model_name and audio_output:
+                
                 # get the audio infomation out of the dict 
                 src = audio_output['props'].get('src', '')
                 if src.startswith("data:audio/wav;base64,"):
-                    # Extract base64-encoded audio data
-                    audio_data = src.split(",")[1]
-                    # Decode base64 data
-                    audio_bytes = base64.b64decode(audio_data)
-                    # Create a file-like object for reading binary data
-                    audio_io = io.BytesIO(audio_bytes)
-                    # Read audio data using soundfile
-                    audio_array, sample_rate = sf.read(audio_io)
-                    
+
+                    # extract base 64 array and sample rate
+                    audio_array, sample_rate = create_gmm.extract_base64(src)
                     gmm_model = create_gmm.create_gmm_model(audio_array, sample_rate) 
-                    print(gmm_model)
 
                     # save model in the file structure under audio_models folder
                     create_gmm.save_model(gmm_model, model_name)
