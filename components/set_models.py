@@ -10,10 +10,11 @@ layout = html.Div(
         html.Div(
             className="side-by-side",
             children=[
-                dcc.Input(id='text-input', type='text', placeholder='Name Model...'),
+                dcc.Input(id='model-name-input', type='text', placeholder='Name Model...'),
                 html.Button("Create Model", id="create-model"),
             ]
         ),
+        html.Div( id="output-container" ),
 
         html.H2("Delete Model"),
         html.Div(
